@@ -72,6 +72,19 @@ the 1.1.1 offsets.
 - Python 3.10+; route B helpers use `androguard` + `loguru`
 - a local signing key (`keytool -genkeypair`) — **never commit it**
 
+## Configuration
+
+`tools/patch_paywall.py` reads its paths from the environment (defaults in brackets):
+
+| variable | meaning |
+|---|---|
+| `CHUCKLE_APK` | input APK [`./chuckle-1.1.1-154.apk`] |
+| `CHUCKLE_OUT` | output APK |
+| `ANDROID_BUILD_TOOLS` | directory holding `zipalign` / `apksigner` |
+| `JAVA_HOME` | JDK used to run `apksigner.bat` |
+| `CHUCKLE_KEYSTORE` | signing keystore [`./out/nopaywall.keystore`] |
+| `CHUCKLE_KS_PASS` / `CHUCKLE_KS_ALIAS` | keystore password / key alias [`chuckle`] |
+
 ## Verification
 
 ```bash
