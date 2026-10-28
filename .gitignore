@@ -1,0 +1,17 @@
+# build artifacts and decompilation output
+out/
+*.apk
+*.idsig
+*.apks
+
+# secrets / tooling binaries
+*.keystore
+*.jks
+tools/apktool/
+
+# python
+__pycache__/
+*.pyc
+
+# scratch scripts used during one-off investigations
+tools/_*.py
