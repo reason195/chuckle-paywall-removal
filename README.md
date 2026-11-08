@@ -4,7 +4,10 @@ Patches for **Chuckle** (`app.jjyy.chuckle`, an X/Twitter client, Kotlin + Jetpa
 Compose, obfuscated, multi-dex) that remove its activation / subscription paywall and
 keep the rebuilt APK usable after re-signing.
 
-Reference build: `1.1.1 (154)`, minSdk 29 / targetSdk 36, `arm64-v8a` only.
+Reference builds: `1.1.1 (154)`, `1.1.2 (160)` and **`1.1.2 (163)`**
+(minSdk 29 / targetSdk 37 from 160, `arm64-v8a` only). Each version is re-located
+semantically — see `docs/case-1.1.2-163.md` for how the obfuscated names shifted.
+
 Verified on a OnePlus CPH2581 (Android 16 / API 36).
 
 ## What gets patched
@@ -116,7 +119,8 @@ On device:
 
 ```
 docs/SKILL.md              workflow, pitfalls, on-device recipes (also installed as an agent skill)
-docs/case-1.1.1-154.md     concrete class names, offsets, signing-block facts, failure signatures
+docs/case-1.1.1-154.md     154: class names, offsets, signing-block facts, failure signatures
+docs/case-1.1.2-163.md     163: re-location table, 403-is-expired-login diagnosis, A/B variants
 tools/patch_paywall.py     route B: all dex patches for 1.1.1(154) + header fix + sign + channel
 tools/smali_patch.py       route A: idempotent smali body rewrites
 tools/inject_channel.py    APK Signing Block channel pair injection
@@ -124,3 +128,12 @@ tools/bisect_patches.py    build single-patch variants to isolate a regression
 tools/uidump.py            decode `uiautomator dump` XML to readable text (UTF-8 safe)
 tools/dexsmali.py          quick pseudo-smali dump of selected classes
 ```
+
+
+## Troubleshooting
+
+**`请求失败` toast / timeline frozen on days-old tweets after a while.**
+`adb logcat -d | grep g3f` shows `RESPONSE: 403` on `api.x.com/graphql/.../HomeTimeline`
+and `api.twitter.com/2/badge_count/...`. This is the X login session / guest token
+expiring, **not** the mod. Re-login (or switch account) and refreshing returns.
+No patch touches the network stack. Full evidence in `docs/case-1.1.2-163.md`.
