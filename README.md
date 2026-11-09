@@ -124,7 +124,8 @@ docs/case-1.1.2-163.md     163: re-location table, 403-is-expired-login diagnosi
 tools/patch_paywall.py     route B: all dex patches for 1.1.1(154) + header fix + sign + channel
 tools/smali_patch.py       route A: idempotent smali body rewrites
 tools/inject_channel.py    APK Signing Block channel pair injection
-tools/bisect_patches.py    build single-patch variants to isolate a regression
+tools/variants.py          A_base / B_no_record / C_full A/B variants (any version, same key)
+tools/bisect_patches.py    legacy single-patch variant builder (154)
 tools/uidump.py            decode `uiautomator dump` XML to readable text (UTF-8 safe)
 tools/dexsmali.py          quick pseudo-smali dump of selected classes
 ```
@@ -137,3 +138,14 @@ tools/dexsmali.py          quick pseudo-smali dump of selected classes
 and `api.twitter.com/2/badge_count/...`. This is the X login session / guest token
 expiring, **not** the mod. Re-login (or switch account) and refreshing returns.
 No patch touches the network stack. Full evidence in `docs/case-1.1.2-163.md`.
+
+
+## Recovering the full build after A/B testing
+
+`tools/variants.py` writes `A_base.apk`, `B_no_record.apk`, `C_full.apk`. When a
+test run is interrupted, the device can be left on a partial variant. Re-install
+the delivered build (same key, no data wipe):
+
+```bash
+adb install -r "out/dist/chuckle 1.1.2 163 nopaywall.apk"
+```
